@@ -28,5 +28,6 @@ hs_err_pid*
 *.iws
 *.iml
 *.ipr
+out/
 
 paradigmas2021.sqlite
