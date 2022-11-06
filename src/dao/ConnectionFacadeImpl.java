@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class ConnectionFacadeImpl implements ConnectionFacade {
     private SchedulerDB schedulerDB;
 
-    public ConnectionFacadeImpl(final SchedulerDB schedulerDB) {
+    public ConnectionFacadeImpl(SchedulerDB schedulerDB) {
         this.schedulerDB = schedulerDB;
     }
 
