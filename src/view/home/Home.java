@@ -4,25 +4,47 @@
 
 package view.home;
 
+import config.SchedulerDB;
+import controller.clientController.impl.ClientControllerImpl;
+import dao.ConnectionFacadeImpl;
+import dao.clientRepository.impl.ClientRepositoryImpl;
+import model.dto.Client;
 import view.turn.Turn;
 
-import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.util.ResourceBundle;
 
 /**
  * @author unknown
  */
 public class Home extends JFrame {
+    private ConnectionFacadeImpl connectionFacade;
+
     public Home() {
         initComponents();
+        connectionFacade = new ConnectionFacadeImpl(SchedulerDB.getInstance());
     }
 
     private void menuItem1(ActionEvent e) {
         new Turn(this).setVisible(true);
+    }
+
+    private void btnClientSearch(ActionEvent e) {
+        ClientRepositoryImpl clientRepository = new ClientRepositoryImpl(connectionFacade);
+        ClientControllerImpl clientController = new ClientControllerImpl(clientRepository);
+        try {
+            final Client client = clientController
+                    .findClientByDocument(jtfDocumentNumberSearch.getText());
+            jtfClientName.setText(client.getName());
+            jtfClientLastName.setText(client.getLastName());
+            jtfDoumentNumber.setText(client.getDocumentNumber());
+        } catch (RuntimeException ex) {
+            // TODO mostrar jdialog para agregar nuevo client
+        }
     }
 
     private void initComponents() {
@@ -36,14 +58,14 @@ public class Home extends JFrame {
         dialogPane = new JPanel();
         contentPanel = new JPanel();
         label1 = new JLabel();
-        textField1 = new JTextField();
-        button1 = new JButton();
+        jtfDocumentNumberSearch = new JTextField();
+        btnClientSearch = new JButton();
         panel1 = new JPanel();
         label2 = new JLabel();
-        textField2 = new JTextField();
-        textField3 = new JTextField();
+        jtfClientName = new JTextField();
+        jtfClientLastName = new JTextField();
         label3 = new JLabel();
-        textField6 = new JTextField();
+        jtfDoumentNumber = new JTextField();
         label6 = new JLabel();
         comboBox1 = new JComboBox();
         label7 = new JLabel();
@@ -105,13 +127,14 @@ public class Home extends JFrame {
                 label1.setText(bundle.getString("Home.label1.text"));
                 contentPanel.add(label1);
                 label1.setBounds(10, 13, 90, label1.getPreferredSize().height);
-                contentPanel.add(textField1);
-                textField1.setBounds(110, 5, 125, textField1.getPreferredSize().height);
+                contentPanel.add(jtfDocumentNumberSearch);
+                jtfDocumentNumberSearch.setBounds(110, 5, 125, jtfDocumentNumberSearch.getPreferredSize().height);
 
-                //---- button1 ----
-                button1.setText("Buscar");
-                contentPanel.add(button1);
-                button1.setBounds(240, 5, 90, button1.getPreferredSize().height);
+                //---- btnClientSearch ----
+                btnClientSearch.setText("Buscar");
+                btnClientSearch.addActionListener(e -> btnClientSearch(e));
+                contentPanel.add(btnClientSearch);
+                btnClientSearch.setBounds(240, 5, 90, btnClientSearch.getPreferredSize().height);
 
                 //======== panel1 ========
                 {
@@ -123,17 +146,17 @@ public class Home extends JFrame {
                     label2.setText(bundle.getString("Home.label2.text"));
                     panel1.add(label2);
                     label2.setBounds(10, 30, 80, 16);
-                    panel1.add(textField2);
-                    textField2.setBounds(105, 20, 330, 30);
-                    panel1.add(textField3);
-                    textField3.setBounds(105, 55, 330, 30);
+                    panel1.add(jtfClientName);
+                    jtfClientName.setBounds(105, 20, 330, 30);
+                    panel1.add(jtfClientLastName);
+                    jtfClientLastName.setBounds(105, 55, 330, 30);
 
                     //---- label3 ----
                     label3.setText(bundle.getString("Home.label3.text"));
                     panel1.add(label3);
                     label3.setBounds(10, 65, 80, 11);
-                    panel1.add(textField6);
-                    textField6.setBounds(300, 90, 135, 30);
+                    panel1.add(jtfDoumentNumber);
+                    jtfDoumentNumber.setBounds(300, 90, 135, 30);
 
                     //---- label6 ----
                     label6.setText(bundle.getString("Home.label6.text"));
@@ -294,14 +317,14 @@ public class Home extends JFrame {
     private JPanel dialogPane;
     private JPanel contentPanel;
     private JLabel label1;
-    private JTextField textField1;
-    private JButton button1;
+    private JTextField jtfDocumentNumberSearch;
+    private JButton btnClientSearch;
     private JPanel panel1;
     private JLabel label2;
-    private JTextField textField2;
-    private JTextField textField3;
+    private JTextField jtfClientName;
+    private JTextField jtfClientLastName;
     private JLabel label3;
-    private JTextField textField6;
+    private JTextField jtfDoumentNumber;
     private JLabel label6;
     private JComboBox comboBox1;
     private JLabel label7;
