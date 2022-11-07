@@ -1,5 +1,3 @@
-
-
 import config.SchedulerDB;
 import dao.ConnectionFacadeImpl;
 import view.home.Home;
