@@ -1,19 +1,18 @@
 package model.dto;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class Turn {
     private int id;
     private LocalDate createDate;
     private LocalDate modifyDate;
     private String time;
-    private Specialty specialty;
+    private Speciality specialty;
     private StateTurn stateTurn;
 
     public Turn(int id, LocalDate createDate,
                 LocalDate modifyDate, String time,
-                Specialty specialty,
+                Speciality specialty,
                 StateTurn stateTurn) {
         this.id = id;
         this.createDate = createDate;
@@ -58,11 +57,11 @@ public class Turn {
         this.time = time;
     }
 
-    public Specialty getSpecialty() {
+    public Speciality getSpecialty() {
         return specialty;
     }
 
-    public void setSpecialty(Specialty specialty) {
+    public void setSpecialty(Speciality specialty) {
         this.specialty = specialty;
     }
 

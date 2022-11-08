@@ -2,7 +2,7 @@ package model.dto;
 
 import java.util.stream.Stream;
 
-public enum Specialty {
+public enum Speciality {
     CHAPA_Y_PINTURA(0, "CHAPA Y PINTURA"),
     FRENOS(1, "FRENOS");
 
@@ -25,13 +25,13 @@ public enum Specialty {
     private int code;
     private String value;
 
-    Specialty(int code, String value) {
+    Speciality(int code, String value) {
         this.code = code;
         this.value = value;
     }
 
-    public static Specialty getEnum(int code) {
-        return Stream.of(Specialty.values()).filter(x->x.code == code)
+    public static Speciality getEnum(int code) {
+        return Stream.of(Speciality.values()).filter(x->x.code == code)
                 .findFirst().orElseThrow(()->new IllegalArgumentException("Tipo de Documento No encontrado"));
     }
 }
