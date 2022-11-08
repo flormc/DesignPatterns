@@ -5,6 +5,7 @@ import java.util.List;
 public class Client extends Person {
     private long clientNumber;
     private List<Vehicle> vehicleList;
+    private List<Turn> turns;
 
     public Client() {
         super();
@@ -15,10 +16,12 @@ public class Client extends Person {
                   final DocumentType documentType,
                   final String documentNumber,
                   final long clientNumber,
-                  List<Vehicle> vehicleList) {
+                  List<Vehicle> vehicleList,
+                  List<Turn> turns) {
         super(name, lastName, documentType, documentNumber);
         this.clientNumber = clientNumber;
         this.vehicleList = vehicleList;
+        this.turns = turns;
     }
 
     public long getClientNumber() {
@@ -35,5 +38,13 @@ public class Client extends Person {
 
     public void setVehicleList(List<Vehicle> vehicleList) {
         this.vehicleList = vehicleList;
+    }
+
+    public List<Turn> getTurns() {
+        return turns;
+    }
+
+    public void setTurns(List<Turn> turns) {
+        this.turns = turns;
     }
 }
