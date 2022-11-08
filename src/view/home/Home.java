@@ -76,6 +76,7 @@ public class Home extends JFrame {
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
+        // Generated using JFormDesigner Evaluation license - flor
         ResourceBundle bundle = ResourceBundle.getBundle("resources.config");
         menuBar1 = new JMenuBar();
         menu1 = new JMenu();
@@ -112,7 +113,7 @@ public class Home extends JFrame {
 
         //======== this ========
         setTitle(bundle.getString("Home.this.title"));
-        Container contentPane = getContentPane();
+        var contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
 
         //======== menuBar1 ========
@@ -144,6 +145,14 @@ public class Home extends JFrame {
         //======== dialogPane ========
         {
             dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
+            dialogPane.setBorder (new javax. swing. border. CompoundBorder( new javax .swing .border .TitledBorder (
+            new javax. swing. border. EmptyBorder( 0, 0, 0, 0) , "JF\u006frmDes\u0069gner \u0045valua\u0074ion"
+            , javax. swing. border. TitledBorder. CENTER, javax. swing. border. TitledBorder. BOTTOM
+            , new java .awt .Font ("D\u0069alog" ,java .awt .Font .BOLD ,12 )
+            , java. awt. Color. red) ,dialogPane. getBorder( )) ); dialogPane. addPropertyChangeListener (
+            new java. beans. PropertyChangeListener( ){ @Override public void propertyChange (java .beans .PropertyChangeEvent e
+            ) {if ("\u0062order" .equals (e .getPropertyName () )) throw new RuntimeException( )
+            ; }} );
             dialogPane.setLayout(new BorderLayout());
 
             //======== contentPanel ========
@@ -200,7 +209,7 @@ public class Home extends JFrame {
                     {
                         // compute preferred size
                         Dimension preferredSize = new Dimension();
-                        for (int i = 0; i < panel1.getComponentCount(); i++) {
+                        for(int i = 0; i < panel1.getComponentCount(); i++) {
                             Rectangle bounds = panel1.getComponent(i).getBounds();
                             preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
                             preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
@@ -245,7 +254,7 @@ public class Home extends JFrame {
                     {
                         // compute preferred size
                         Dimension preferredSize = new Dimension();
-                        for (int i = 0; i < panel2.getComponentCount(); i++) {
+                        for(int i = 0; i < panel2.getComponentCount(); i++) {
                             Rectangle bounds = panel2.getComponent(i).getBounds();
                             preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
                             preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
@@ -271,13 +280,13 @@ public class Home extends JFrame {
 
                         //---- jtTableTurn ----
                         jtTableTurn.setModel(new DefaultTableModel(
-                                new Object[][]{
-                                        {null, null, null, null, null},
-                                        {null, null, null, null, null},
-                                },
-                                new String[]{
-                                        "Fecha", "Especialidad", "Hora", "Modificado", "Estado"
-                                }
+                            new Object[][] {
+                                {null, null, null, null, null},
+                                {null, null, null, null, null},
+                            },
+                            new String[] {
+                                "Fecha", "Especialidad", "Hora", "Modificado", "Estado"
+                            }
                         ));
                         scrollPane1.setViewportView(jtTableTurn);
                     }
@@ -287,7 +296,7 @@ public class Home extends JFrame {
                     {
                         // compute preferred size
                         Dimension preferredSize = new Dimension();
-                        for (int i = 0; i < panel3.getComponentCount(); i++) {
+                        for(int i = 0; i < panel3.getComponentCount(); i++) {
                             Rectangle bounds = panel3.getComponent(i).getBounds();
                             preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
                             preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
@@ -305,7 +314,7 @@ public class Home extends JFrame {
                 {
                     // compute preferred size
                     Dimension preferredSize = new Dimension();
-                    for (int i = 0; i < contentPanel.getComponentCount(); i++) {
+                    for(int i = 0; i < contentPanel.getComponentCount(); i++) {
                         Rectangle bounds = contentPanel.getComponent(i).getBounds();
                         preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
                         preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
@@ -323,20 +332,20 @@ public class Home extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 85, 80};
-                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{1.0, 0.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 85, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0, 0.0};
 
                 //---- okButton ----
                 okButton.setText(bundle.getString("Home.okButton.text"));
                 buttonBar.add(okButton, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
-                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                        new Insets(0, 0, 0, 5), 0, 0));
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- cancelButton ----
                 cancelButton.setText(bundle.getString("Home.cancelButton.text"));
                 buttonBar.add(cancelButton, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
-                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                        new Insets(0, 0, 0, 0), 0, 0));
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
         }
@@ -350,6 +359,7 @@ public class Home extends JFrame {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
+    // Generated using JFormDesigner Evaluation license - flor
     private JMenuBar menuBar1;
     private JMenu menu1;
     private JMenuItem menuItem2;

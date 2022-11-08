@@ -1,13 +1,10 @@
 package controller.clientController.adapter;
 
 import model.db.TurnDao;
-import model.db.VehicleDao;
-import model.dto.Branch;
-import model.dto.Model;
-import model.dto.Specialty;
+import model.dto.Speciality;
 import model.dto.StateTurn;
 import model.dto.Turn;
-import model.dto.Vehicle;
+import model.dto.TurnBuilder;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,14 +17,14 @@ public class TurnControllerParser {
     }
 
     public static Turn convertTurnDaoToDTO(TurnDao turnDao) {
-        Turn turn = new Turn();
-        turn.setId(turnDao.getId());
-        turn.setCreateDate(turnDao.getCreateDate());
-        turn.setModifyDate(turnDao.getModifyDate());
-        turn.setTime(turnDao.getTime());
-        turn.setSpecialty(Specialty.getEnum(turnDao.getSpecialty()));
-        turn.setStateTurn(StateTurn.getEnum(turnDao.getStateTurn()));
+        return TurnBuilder.aTurn()
+                .withId(turnDao.getId())
+                .withCreateDate(turnDao.getCreateDate())
+                .withModifyDate(turnDao.getModifyDate())
+                .withTime(turnDao.getTime())
+                .withSpecialty(Speciality.getEnum(turnDao.getSpecialty()))
+                .withStateTurn(StateTurn.getEnum(turnDao.getStateTurn()))
+                .build();
 
-        return turn;
     }
 }
