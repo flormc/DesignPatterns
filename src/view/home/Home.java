@@ -8,6 +8,7 @@ import config.SchedulerDB;
 import controller.clientController.impl.ClientControllerImpl;
 import dao.ConnectionFacadeImpl;
 import dao.clientRepository.impl.ClientRepositoryImpl;
+import dao.turnRepository.impl.TurnRepositoryImpl;
 import dao.vehicleRespository.impl.VehicleRepositoryImpl;
 import model.dto.Branch;
 import model.dto.Client;
@@ -18,8 +19,10 @@ import view.turn.Turn;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -38,9 +41,12 @@ public class Home extends JFrame {
     }
 
     private void btnClientSearch(ActionEvent e) {
-        ClientRepositoryImpl clientRepository = new ClientRepositoryImpl(connectionFacade);;
+        ClientRepositoryImpl clientRepository = new ClientRepositoryImpl(connectionFacade);
+        ;
         VehicleRepositoryImpl vehicleRepository = new VehicleRepositoryImpl(connectionFacade);
-        ClientControllerImpl clientController = new ClientControllerImpl(clientRepository, vehicleRepository);
+        TurnRepositoryImpl turnRepository = new TurnRepositoryImpl(connectionFacade);
+        ClientControllerImpl clientController = new ClientControllerImpl(clientRepository,
+                vehicleRepository, turnRepository);
 
         try {
             final Client client = clientController
@@ -54,7 +60,15 @@ public class Home extends JFrame {
             jcbBranch.getModel().setSelectedItem(vehicle.getBranch().getValue());
             jbcModel.getModel().setSelectedItem(vehicle.getModel().getValue());
             jtbPolicy.setText(vehicle.getPolicyNumber());
+            final List<model.dto.Turn> turns = client.getTurns();
+            for (int j = 0; j < turns.size(); j++) {
+                jtTableTurn.getModel().setValueAt(turns.get(j).getCreateDate(), j, 0);
+                jtTableTurn.getModel().setValueAt(turns.get(j).getSpecialty().getValue(), j, 1);
+                jtTableTurn.getModel().setValueAt(turns.get(j).getTime(), j, 2);
+                jtTableTurn.getModel().setValueAt(turns.get(j).getModifyDate(), j, 3);
+                jtTableTurn.getModel().setValueAt(turns.get(j).getStateTurn().getValue(), j, 4);
 
+            }
         } catch (RuntimeException ex) {
             // TODO mostrar jdialog para agregar nuevo client
         }
@@ -91,14 +105,14 @@ public class Home extends JFrame {
         jtbPolicy = new JTextField();
         panel3 = new JPanel();
         scrollPane1 = new JScrollPane();
-        table1 = new JTable();
+        jtTableTurn = new JTable();
         buttonBar = new JPanel();
         okButton = new JButton();
         cancelButton = new JButton();
 
         //======== this ========
         setTitle(bundle.getString("Home.this.title"));
-        var contentPane = getContentPane();
+        Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
 
         //======== menuBar1 ========
@@ -186,7 +200,7 @@ public class Home extends JFrame {
                     {
                         // compute preferred size
                         Dimension preferredSize = new Dimension();
-                        for(int i = 0; i < panel1.getComponentCount(); i++) {
+                        for (int i = 0; i < panel1.getComponentCount(); i++) {
                             Rectangle bounds = panel1.getComponent(i).getBounds();
                             preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
                             preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
@@ -231,7 +245,7 @@ public class Home extends JFrame {
                     {
                         // compute preferred size
                         Dimension preferredSize = new Dimension();
-                        for(int i = 0; i < panel2.getComponentCount(); i++) {
+                        for (int i = 0; i < panel2.getComponentCount(); i++) {
                             Rectangle bounds = panel2.getComponent(i).getBounds();
                             preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
                             preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
@@ -254,7 +268,18 @@ public class Home extends JFrame {
 
                     //======== scrollPane1 ========
                     {
-                        scrollPane1.setViewportView(table1);
+
+                        //---- jtTableTurn ----
+                        jtTableTurn.setModel(new DefaultTableModel(
+                                new Object[][]{
+                                        {null, null, null, null, null},
+                                        {null, null, null, null, null},
+                                },
+                                new String[]{
+                                        "Fecha", "Especialidad", "Hora", "Modificado", "Estado"
+                                }
+                        ));
+                        scrollPane1.setViewportView(jtTableTurn);
                     }
                     panel3.add(scrollPane1);
                     scrollPane1.setBounds(10, 25, 715, 175);
@@ -262,7 +287,7 @@ public class Home extends JFrame {
                     {
                         // compute preferred size
                         Dimension preferredSize = new Dimension();
-                        for(int i = 0; i < panel3.getComponentCount(); i++) {
+                        for (int i = 0; i < panel3.getComponentCount(); i++) {
                             Rectangle bounds = panel3.getComponent(i).getBounds();
                             preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
                             preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
@@ -280,7 +305,7 @@ public class Home extends JFrame {
                 {
                     // compute preferred size
                     Dimension preferredSize = new Dimension();
-                    for(int i = 0; i < contentPanel.getComponentCount(); i++) {
+                    for (int i = 0; i < contentPanel.getComponentCount(); i++) {
                         Rectangle bounds = contentPanel.getComponent(i).getBounds();
                         preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
                         preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
@@ -298,20 +323,20 @@ public class Home extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 85, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0, 0.0};
+                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 85, 80};
+                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{1.0, 0.0, 0.0};
 
                 //---- okButton ----
                 okButton.setText(bundle.getString("Home.okButton.text"));
                 buttonBar.add(okButton, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- cancelButton ----
                 cancelButton.setText(bundle.getString("Home.cancelButton.text"));
                 buttonBar.add(cancelButton, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 0), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
         }
@@ -321,6 +346,7 @@ public class Home extends JFrame {
         // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
         jcbDni.setModel(new DefaultComboBoxModel(DocumentType.values()));
         jcbBranch.setModel(new DefaultComboBoxModel(Branch.values()));
+
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
@@ -352,7 +378,7 @@ public class Home extends JFrame {
     private JTextField jtbPolicy;
     private JPanel panel3;
     private JScrollPane scrollPane1;
-    private JTable table1;
+    private JTable jtTableTurn;
     private JPanel buttonBar;
     private JButton okButton;
     private JButton cancelButton;

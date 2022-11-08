@@ -1,0 +1,76 @@
+package model.dto;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+public class Turn {
+    private int id;
+    private LocalDate createDate;
+    private LocalDate modifyDate;
+    private String time;
+    private Specialty specialty;
+    private StateTurn stateTurn;
+
+    public Turn(int id, LocalDate createDate,
+                LocalDate modifyDate, String time,
+                Specialty specialty,
+                StateTurn stateTurn) {
+        this.id = id;
+        this.createDate = createDate;
+        this.modifyDate = modifyDate;
+        this.time = time;
+        this.specialty = specialty;
+        this.stateTurn = stateTurn;
+    }
+
+    public Turn() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public LocalDate getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(LocalDate createDate) {
+        this.createDate = createDate;
+    }
+
+    public LocalDate getModifyDate() {
+        return modifyDate;
+    }
+
+    public void setModifyDate(LocalDate modifyDate) {
+        this.modifyDate = modifyDate;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public Specialty getSpecialty() {
+        return specialty;
+    }
+
+    public void setSpecialty(Specialty specialty) {
+        this.specialty = specialty;
+    }
+
+    public StateTurn getStateTurn() {
+        return stateTurn;
+    }
+
+    public void setStateTurn(StateTurn stateTurn) {
+        this.stateTurn = stateTurn;
+    }
+}
