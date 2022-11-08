@@ -8,7 +8,11 @@ import config.SchedulerDB;
 import controller.clientController.impl.ClientControllerImpl;
 import dao.ConnectionFacadeImpl;
 import dao.clientRepository.impl.ClientRepositoryImpl;
+import dao.vehicleRespository.impl.VehicleRepositoryImpl;
+import model.dto.Branch;
 import model.dto.Client;
+import model.dto.DocumentType;
+import model.dto.Vehicle;
 import view.turn.Turn;
 
 import javax.swing.*;
@@ -34,14 +38,23 @@ public class Home extends JFrame {
     }
 
     private void btnClientSearch(ActionEvent e) {
-        ClientRepositoryImpl clientRepository = new ClientRepositoryImpl(connectionFacade);
-        ClientControllerImpl clientController = new ClientControllerImpl(clientRepository);
+        ClientRepositoryImpl clientRepository = new ClientRepositoryImpl(connectionFacade);;
+        VehicleRepositoryImpl vehicleRepository = new VehicleRepositoryImpl(connectionFacade);
+        ClientControllerImpl clientController = new ClientControllerImpl(clientRepository, vehicleRepository);
+
         try {
             final Client client = clientController
                     .findClientByDocument(jtfDocumentNumberSearch.getText());
             jtfClientName.setText(client.getName());
             jtfClientLastName.setText(client.getLastName());
             jtfDoumentNumber.setText(client.getDocumentNumber());
+            jcbDni.getModel().setSelectedItem(client.getDocumentType().getValue());
+
+            final Vehicle vehicle = client.getVehicleList().get(0);
+            jcbBranch.getModel().setSelectedItem(vehicle.getBranch().getValue());
+            jbcModel.getModel().setSelectedItem(vehicle.getModel().getValue());
+            jtbPolicy.setText(vehicle.getPolicyNumber());
+
         } catch (RuntimeException ex) {
             // TODO mostrar jdialog para agregar nuevo client
         }
@@ -67,15 +80,15 @@ public class Home extends JFrame {
         label3 = new JLabel();
         jtfDoumentNumber = new JTextField();
         label6 = new JLabel();
-        comboBox1 = new JComboBox();
+        jcbDni = new JComboBox();
         label7 = new JLabel();
         panel2 = new JPanel();
         label4 = new JLabel();
         label5 = new JLabel();
-        comboBox2 = new JComboBox();
-        comboBox3 = new JComboBox();
+        jcbBranch = new JComboBox();
+        jbcModel = new JComboBox();
         label8 = new JLabel();
-        textField4 = new JTextField();
+        jtbPolicy = new JTextField();
         panel3 = new JPanel();
         scrollPane1 = new JScrollPane();
         table1 = new JTable();
@@ -85,7 +98,7 @@ public class Home extends JFrame {
 
         //======== this ========
         setTitle(bundle.getString("Home.this.title"));
-        Container contentPane = getContentPane();
+        var contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
 
         //======== menuBar1 ========
@@ -161,9 +174,9 @@ public class Home extends JFrame {
                     //---- label6 ----
                     label6.setText(bundle.getString("Home.label6.text"));
                     panel1.add(label6);
-                    label6.setBounds(190, 100, 100, 15);
-                    panel1.add(comboBox1);
-                    comboBox1.setBounds(105, 90, 75, comboBox1.getPreferredSize().height);
+                    label6.setBounds(235, 100, 60, 15);
+                    panel1.add(jcbDni);
+                    jcbDni.setBounds(105, 93, 125, jcbDni.getPreferredSize().height);
 
                     //---- label7 ----
                     label7.setText(bundle.getString("Home.label7.text"));
@@ -203,17 +216,17 @@ public class Home extends JFrame {
                     label5.setText(bundle.getString("Home.label5.text"));
                     panel2.add(label5);
                     label5.setBounds(10, 60, 60, 16);
-                    panel2.add(comboBox2);
-                    comboBox2.setBounds(110, 20, 160, comboBox2.getPreferredSize().height);
-                    panel2.add(comboBox3);
-                    comboBox3.setBounds(110, 55, 160, 30);
+                    panel2.add(jcbBranch);
+                    jcbBranch.setBounds(110, 20, 160, jcbBranch.getPreferredSize().height);
+                    panel2.add(jbcModel);
+                    jbcModel.setBounds(110, 55, 160, 30);
 
                     //---- label8 ----
                     label8.setText(bundle.getString("Home.label8.text"));
                     panel2.add(label8);
                     label8.setBounds(10, 95, 100, 16);
-                    panel2.add(textField4);
-                    textField4.setBounds(110, 90, 160, textField4.getPreferredSize().height);
+                    panel2.add(jtbPolicy);
+                    jtbPolicy.setBounds(110, 90, 155, jtbPolicy.getPreferredSize().height);
 
                     {
                         // compute preferred size
@@ -306,6 +319,8 @@ public class Home extends JFrame {
         pack();
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
+        jcbDni.setModel(new DefaultComboBoxModel(DocumentType.values()));
+        jcbBranch.setModel(new DefaultComboBoxModel(Branch.values()));
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
@@ -326,15 +341,15 @@ public class Home extends JFrame {
     private JLabel label3;
     private JTextField jtfDoumentNumber;
     private JLabel label6;
-    private JComboBox comboBox1;
+    private JComboBox jcbDni;
     private JLabel label7;
     private JPanel panel2;
     private JLabel label4;
     private JLabel label5;
-    private JComboBox comboBox2;
-    private JComboBox comboBox3;
+    private JComboBox jcbBranch;
+    private JComboBox jbcModel;
     private JLabel label8;
-    private JTextField textField4;
+    private JTextField jtbPolicy;
     private JPanel panel3;
     private JScrollPane scrollPane1;
     private JTable table1;
