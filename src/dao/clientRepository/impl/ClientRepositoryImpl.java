@@ -24,7 +24,7 @@ public class ClientRepositoryImpl implements ClientRepository {
         final Connection connection = connectionFacade.startConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(BY_DOCUMENT);
         preparedStatement.setString(1, documentNumber);
-        ClientDao client = null;
+
         ResultSet rs = preparedStatement.executeQuery();
 
         return Optional.ofNullable(fillDao(rs))
