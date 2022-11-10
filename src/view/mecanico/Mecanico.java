@@ -4,7 +4,7 @@
 
 package view.mecanico;
 
-import com.toedter.calendar.*;
+//import com.toedter.calendar.*;
 import model.dto.Speciality;
 
 import java.awt.*;
@@ -17,9 +17,9 @@ import javax.swing.*;
 public class Mecanico extends JDialog {
     public Mecanico(Window owner) {
         super(owner);
-        initComponents();
+//        initComponents();
     }
-
+/**
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         // Generated using JFormDesigner Evaluation license - flor
@@ -99,4 +99,5 @@ public class Mecanico extends JDialog {
     private JButton button1;
     private JButton button2;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
+ */
 }

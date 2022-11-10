@@ -10,10 +10,14 @@ import dao.ConnectionFacadeImpl;
 import dao.clientRepository.impl.ClientRepositoryImpl;
 import dao.turnRepository.impl.TurnRepositoryImpl;
 import dao.vehicleRespository.impl.VehicleRepositoryImpl;
+import exception.ResourceNotFoundException;
 import model.dto.Branch;
 import model.dto.Client;
+import model.dto.ClientBuilder;
 import model.dto.DocumentType;
+import model.dto.Model;
 import model.dto.Vehicle;
+import model.dto.VehicleBuilder;
 import view.turn.Turn;
 
 import javax.swing.*;
@@ -22,6 +26,9 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -42,7 +49,6 @@ public class Home extends JFrame {
 
     private void btnClientSearch(ActionEvent e) {
         ClientRepositoryImpl clientRepository = new ClientRepositoryImpl(connectionFacade);
-        ;
         VehicleRepositoryImpl vehicleRepository = new VehicleRepositoryImpl(connectionFacade);
         TurnRepositoryImpl turnRepository = new TurnRepositoryImpl(connectionFacade);
         ClientControllerImpl clientController = new ClientControllerImpl(clientRepository,
@@ -51,32 +57,111 @@ public class Home extends JFrame {
         try {
             final Client client = clientController
                     .findClientByDocument(jtfDocumentNumberSearch.getText());
-            jtfClientName.setText(client.getName());
-            jtfClientLastName.setText(client.getLastName());
-            jtfDoumentNumber.setText(client.getDocumentNumber());
-            jcbDni.getModel().setSelectedItem(client.getDocumentType().getValue());
 
-            final Vehicle vehicle = client.getVehicleList().get(0);
-            jcbBranch.getModel().setSelectedItem(vehicle.getBranch().getValue());
-            jbcModel.getModel().setSelectedItem(vehicle.getModel().getValue());
-            jtbPolicy.setText(vehicle.getPolicyNumber());
-            final List<model.dto.Turn> turns = client.getTurns();
-            for (int j = 0; j < turns.size(); j++) {
-                jtTableTurn.getModel().setValueAt(turns.get(j).getCreateDate(), j, 0);
-                jtTableTurn.getModel().setValueAt(turns.get(j).getSpecialty().getValue(), j, 1);
-                jtTableTurn.getModel().setValueAt(turns.get(j).getTime(), j, 2);
-                jtTableTurn.getModel().setValueAt(turns.get(j).getModifyDate(), j, 3);
-                jtTableTurn.getModel().setValueAt(turns.get(j).getStateTurn().getValue(), j, 4);
-
+            if (client != null) {
+                disableField(Boolean.FALSE);
+                fillFields(client);
             }
-        } catch (RuntimeException ex) {
-            // TODO mostrar jdialog para agregar nuevo client
+
+        } catch (ResourceNotFoundException er) {
+            JOptionPane.showMessageDialog(new JFrame(), er.getContent(), "Error: " + er.getCode(),
+                    JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void disableField(Boolean flag) {
+        jtfClientName.setEnabled(flag);
+        jtfClientLastName.setEnabled(flag);
+        jtfDoumentNumber.setEnabled(flag);
+        jcbDni.setEnabled(flag);
+        jcbBranch.setEnabled(flag);
+        jbcModel.setEnabled(flag);
+        jtbPolicy.setEnabled(flag);
+        okButton.setEnabled(flag);
+    }
+
+    private void fillFields(Client client) {
+        jtfClientName.setText(client.getName());
+        jtfClientLastName.setText(client.getLastName());
+        jtfDoumentNumber.setText(client.getDocumentNumber());
+        jcbDni.getModel().setSelectedItem(client.getDocumentType().getValue());
+
+        final Vehicle vehicle = client.getVehicleList().get(0);
+        jcbBranch.getModel().setSelectedItem(vehicle.getBranch().getValue());
+        jbcModel.getModel().setSelectedItem(vehicle.getModel().getValue());
+        jtbPolicy.setText(vehicle.getPolicyNumber());
+        jtTableTurn.setVisible(true);
+        final List<model.dto.Turn> turns = client.getTurns();
+        for (int j = 0; j < turns.size(); j++) {
+            jtTableTurn.getModel().setValueAt(turns.get(j).getCreateDate(), j, 0);
+            jtTableTurn.getModel().setValueAt(turns.get(j).getSpecialty().getValue(), j, 1);
+            jtTableTurn.getModel().setValueAt(turns.get(j).getTime(), j, 2);
+            jtTableTurn.getModel().setValueAt(turns.get(j).getModifyDate(), j, 3);
+            jtTableTurn.getModel().setValueAt(turns.get(j).getStateTurn().getValue(), j, 4);
+
+        }
+    }
+
+    private void cancel(ActionEvent e) {
+        System.exit(1);
+    }
+
+    private void crear(ActionEvent e) {
+        ClientRepositoryImpl clientRepository = new ClientRepositoryImpl(connectionFacade);
+        VehicleRepositoryImpl vehicleRepository = new VehicleRepositoryImpl(connectionFacade);
+        TurnRepositoryImpl turnRepository = new TurnRepositoryImpl(connectionFacade);
+        ClientControllerImpl clientController = new ClientControllerImpl(clientRepository,
+                vehicleRepository, turnRepository);
+        try {
+            final Vehicle vehicle = VehicleBuilder.aVehicle()
+                    .withBranch(Branch.getEnum(jcbBranch.getSelectedIndex()))
+                    .withModel(Model.getEnum(jbcModel.getSelectedIndex()))
+                    .withPolicyNumber(jtbPolicy.getText())
+                    .build();
+            final Client client = ClientBuilder.aClient()
+                    .withName(jtfClientName.getText())
+                    .withLastName(jtfClientLastName.getText())
+                    .withDocumentType(DocumentType.getEnum(jcbDni.getSelectedIndex()))
+                    .withDocumentNumber(jtfDoumentNumber.getText())
+                    .withVehicleList(Collections.singletonList(vehicle))
+                    .build();
+
+            final Client createClient = clientController.createClient(client);
+
+            if (createClient != null ){
+                JOptionPane.showMessageDialog(new JFrame(), "Cliente Creado Con Exito",
+                        "Nuevo Cliente",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+
+        } catch (ResourceNotFoundException er) {
+            JOptionPane.showMessageDialog(new JFrame(), er.getContent(), "Error: " + er.getCode(),
+                    JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void button1(ActionEvent e) {
+        disableField(Boolean.TRUE);
+        clearFields();
+    }
+
+    private void clearFields() {
+        jtfClientName.setText("");
+        jtfClientLastName.setText("");
+        jtfDoumentNumber.setText("");
+        jcbDni.setSelectedItem(0);
+        jcbBranch.setSelectedItem(0);
+        jbcModel.setSelectedItem(0);
+        jtbPolicy.setText("");
+        jtTableTurn.setVisible(false);
     }
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
-        // Generated using JFormDesigner Evaluation license - flor
         ResourceBundle bundle = ResourceBundle.getBundle("resources.config");
         menuBar1 = new JMenuBar();
         menu1 = new JMenu();
@@ -107,13 +192,14 @@ public class Home extends JFrame {
         panel3 = new JPanel();
         scrollPane1 = new JScrollPane();
         jtTableTurn = new JTable();
+        button1 = new JButton();
         buttonBar = new JPanel();
         okButton = new JButton();
         cancelButton = new JButton();
 
         //======== this ========
         setTitle(bundle.getString("Home.this.title"));
-        var contentPane = getContentPane();
+        Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
 
         //======== menuBar1 ========
@@ -145,14 +231,6 @@ public class Home extends JFrame {
         //======== dialogPane ========
         {
             dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
-            dialogPane.setBorder (new javax. swing. border. CompoundBorder( new javax .swing .border .TitledBorder (
-            new javax. swing. border. EmptyBorder( 0, 0, 0, 0) , "JF\u006frmDes\u0069gner \u0045valua\u0074ion"
-            , javax. swing. border. TitledBorder. CENTER, javax. swing. border. TitledBorder. BOTTOM
-            , new java .awt .Font ("D\u0069alog" ,java .awt .Font .BOLD ,12 )
-            , java. awt. Color. red) ,dialogPane. getBorder( )) ); dialogPane. addPropertyChangeListener (
-            new java. beans. PropertyChangeListener( ){ @Override public void propertyChange (java .beans .PropertyChangeEvent e
-            ) {if ("\u0062order" .equals (e .getPropertyName () )) throw new RuntimeException( )
-            ; }} );
             dialogPane.setLayout(new BorderLayout());
 
             //======== contentPanel ========
@@ -311,6 +389,12 @@ public class Home extends JFrame {
                 contentPanel.add(panel3);
                 panel3.setBounds(5, 180, 735, 210);
 
+                //---- button1 ----
+                button1.setText(bundle.getString("Home.button1.text"));
+                button1.addActionListener(e -> button1(e));
+                contentPanel.add(button1);
+                button1.setBounds(335, 5, 90, button1.getPreferredSize().height);
+
                 {
                     // compute preferred size
                     Dimension preferredSize = new Dimension();
@@ -336,13 +420,15 @@ public class Home extends JFrame {
                 ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0, 0.0};
 
                 //---- okButton ----
-                okButton.setText(bundle.getString("Home.okButton.text"));
+                okButton.setText("Crear");
+                okButton.addActionListener(e -> crear(e));
                 buttonBar.add(okButton, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- cancelButton ----
-                cancelButton.setText(bundle.getString("Home.cancelButton.text"));
+                cancelButton.setText("Salir");
+                cancelButton.addActionListener(e -> cancel(e));
                 buttonBar.add(cancelButton, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
@@ -355,11 +441,11 @@ public class Home extends JFrame {
         // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
         jcbDni.setModel(new DefaultComboBoxModel(DocumentType.values()));
         jcbBranch.setModel(new DefaultComboBoxModel(Branch.values()));
+        jbcModel.setModel(new DefaultComboBoxModel(Model.values()));
 
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
-    // Generated using JFormDesigner Evaluation license - flor
     private JMenuBar menuBar1;
     private JMenu menu1;
     private JMenuItem menuItem2;
@@ -389,6 +475,7 @@ public class Home extends JFrame {
     private JPanel panel3;
     private JScrollPane scrollPane1;
     private JTable jtTableTurn;
+    private JButton button1;
     private JPanel buttonBar;
     private JButton okButton;
     private JButton cancelButton;
