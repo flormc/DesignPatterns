@@ -1,11 +1,15 @@
 package model.db;
 
+import java.util.List;
+
 public class ClientDao {
     private String name;
     private String lastName;
     private int documentType;
     private int clientNumber;
     private String documentNumber;
+    private List<VehicleDao> vehicleDaos;
+    private List<TurnDao> turns;
 
     public ClientDao() {
     }
@@ -14,11 +18,15 @@ public class ClientDao {
                      String lastName,
                      int documentType,
                      String documentNumber,
-                     int clientNumber) {
+                     int clientNumber,
+                     List<VehicleDao> vehicleDaos,
+                     List<TurnDao> turns) {
         this.name = name;
         this.documentType = documentType;
         this.documentNumber = documentNumber;
         this.clientNumber = clientNumber;
+        this.vehicleDaos = vehicleDaos;
+        this.turns = turns;
     }
 
     public String getName() {
@@ -59,5 +67,21 @@ public class ClientDao {
 
     public void setClientNumber(int clientNumber) {
         this.clientNumber = clientNumber;
+    }
+
+    public List<VehicleDao> getVehicleDaos() {
+        return vehicleDaos;
+    }
+
+    public void setVehicleDaos(List<VehicleDao> vehicleDaos) {
+        this.vehicleDaos = vehicleDaos;
+    }
+
+    public List<TurnDao> getTurns() {
+        return turns;
+    }
+
+    public void setTurns(List<TurnDao> turns) {
+        this.turns = turns;
     }
 }

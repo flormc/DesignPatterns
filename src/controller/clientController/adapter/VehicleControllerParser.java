@@ -1,9 +1,11 @@
 package controller.clientController.adapter;
 
 import model.db.VehicleDao;
+import model.db.VehicleDaoBuilder;
 import model.dto.Branch;
 import model.dto.Model;
 import model.dto.Vehicle;
+import model.dto.VehicleBuilder;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,13 +18,18 @@ public class VehicleControllerParser {
     }
 
     public static Vehicle convertVehicleDaoToDTO(VehicleDao vehicleDao) {
-        Vehicle vehicle = new Vehicle();
-        vehicle.setId(vehicleDao.getId());
-        vehicle.setPatent(vehicleDao.getPatent());
-        vehicle.setBranch(Branch.getEnum(vehicleDao.getId()));
-        vehicle.setModel(Model.getEnum(vehicleDao.getModel()));
-        vehicle.setPolicyNumber(vehicleDao.getPolicyNumber());
+        return VehicleBuilder.aVehicle()
+                .withPolicyNumber(vehicleDao.getPolicyNumber())
+                .withModel(Model.getEnum(vehicleDao.getModel()))
+                .withBranch(Branch.getEnum(vehicleDao.getBranch()))
+                .build();
+    }
 
-        return vehicle;
+    public static VehicleDao convertVehicleDTOToDao(Vehicle vehicle) {
+        return VehicleDaoBuilder.aVehicleDao()
+                .withPolicyNumber(vehicle.getPolicyNumber())
+                .withModel(vehicle.getModel().getCode())
+                .withBranch(vehicle.getBranch().getCode())
+                .build();
     }
 }

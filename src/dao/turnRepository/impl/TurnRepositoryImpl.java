@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class TurnRepositoryImpl implements TurnRepository {
-    public static final String BY_CLIENT_ID = "SELECT * FROM turn t INNER JOIN client c ON t.cod_client = ?";
+    public static final String BY_CLIENT_ID = "SELECT * FROM turn t INNER JOIN client c ON t.cod_client = c.cod_cliente AND c.cod_cliente = ?";
     private ConnectionFacadeImpl connectionFacade;
 
     public TurnRepositoryImpl(ConnectionFacadeImpl connectionFacade) {

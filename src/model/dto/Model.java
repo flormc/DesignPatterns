@@ -6,8 +6,8 @@ public enum Model {
     FIESTA(0, "FIESTA"),
     CHEXA(1, "CHEXA"),
     PALIO(2, "PALIO"),
-    FIAT(3, "DUSTER"),
-    PEUGEOT(4, "306");
+    DUSTER(3, "DUSTER"),
+    P306(4, "P306");
 
     public int getCode() {
         return code;
